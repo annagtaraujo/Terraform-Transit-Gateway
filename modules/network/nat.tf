@@ -10,7 +10,7 @@ resource "aws_eip" "infra_eip_a"{
 
 resource "aws_nat_gateway" "nat_a"{
     allocation_id = aws_eip.infra_eip_a.id
-    subnet_id     = aws_subnet.vpc-private-subnet-a[0].id
+    subnet_id     = aws_subnet.vpc-public-subnet-a[0].id
     tags = {
         Name = format("%s-vpc-a-nat-gw", var.infra_name)
     }
@@ -34,7 +34,7 @@ resource "aws_eip" "infra_eip_b"{
 
 resource "aws_nat_gateway" "nat_b"{
     allocation_id = aws_eip.infra_eip_b.id
-    subnet_id     = aws_subnet.vpc-private-subnet-b[0].id 
+    subnet_id     = aws_subnet.vpc-public-subnet-b[0].id 
     tags = {
         Name = format("%s-vpc-b-nat-gw", var.infra_name)
     }
@@ -58,7 +58,7 @@ resource "aws_eip" "infra_eip_c"{
 
 resource "aws_nat_gateway" "nat_c"{
     allocation_id = aws_eip.infra_eip_c.id
-    subnet_id     = aws_subnet.vpc-private-subnet-c[0].id 
+    subnet_id     = aws_subnet.vpc-public-subnet-c[0].id 
     tags = {
         Name = format("%s-vpc-c-nat-gw", var.infra_name)
     }
