@@ -34,24 +34,36 @@ resource "aws_route" "public_internet_gateway_a" {
   }
 }
 
-resource "aws_route" "tgw_a_to_b" {
+resource "aws_route" "public_tgw_a_to_b" {
+  count = length(var.public_subnets_b)
   route_table_id         = aws_route_table.public_table_a.id
-  destination_cidr_block = var.cidr_block_b
+  destination_cidr_block = var.public_subnets_b[count.index]
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_a
+  ]
 }
 
-resource "aws_route" "tgw_a_to_c" {
+resource "aws_route" "public_tgw_a_to_c" {
+  count = length(var.public_subnets_c)
   route_table_id         = aws_route_table.public_table_a.id
-  destination_cidr_block = var.cidr_block_c
+  destination_cidr_block = var.public_subnets_c[count.index]
   transit_gateway_id = module.tgw.tgw_id
-
+  
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_a
+  ]
 }
 
 resource "aws_route" "private_internet_gateway_a" {
@@ -64,8 +76,38 @@ resource "aws_route" "private_internet_gateway_a" {
   }
 }
 
+resource "aws_route" "private_a_to_b" {
+  route_table_id         = aws_route_table.private_table_a.id
+  destination_cidr_block = var.cidr_block_b
+  transit_gateway_id           = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+    depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_a
+  ]
+}
+
+resource "aws_route" "private_a_to_c" {
+  route_table_id         = aws_route_table.private_table_a.id
+  destination_cidr_block = var.cidr_block_c
+  transit_gateway_id         = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_a
+  ]
+}
+
 resource "aws_route_table_association" "public_a"{  
-   count = 4
+   count = length(var.public_subnets_a)
    subnet_id = aws_subnet.vpc-public-subnet-a[count.index].id
    route_table_id = aws_route_table.public_table_a.id
 
@@ -76,7 +118,7 @@ resource "aws_route_table_association" "public_a"{
 }
 
 resource "aws_route_table_association" "private_a"{  
-   count = 4
+   count = length(var.public_subnets_a)
    subnet_id = aws_subnet.vpc-private-subnet-a[count.index].id
    route_table_id = aws_route_table.private_table_a.id
 
@@ -123,24 +165,36 @@ resource "aws_route" "public_internet_gateway_b" {
   }
 }
 
-resource "aws_route" "tgw_b_to_a" {
+resource "aws_route" "public_tgw_b_to_a" {
+  count = length(var.public_subnets_a)
   route_table_id         = aws_route_table.public_table_b.id
-  destination_cidr_block = var.cidr_block_a
+  destination_cidr_block = var.public_subnets_a[count.index]
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_b
+  ]
 }
 
-resource "aws_route" "tgw_b_to_c" {
+resource "aws_route" "public_tgw_b_to_c" {
+  count = length(var.public_subnets_c)
   route_table_id         = aws_route_table.public_table_b.id
-  destination_cidr_block = var.cidr_block_c
+  destination_cidr_block = var.public_subnets_c[count.index]
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_b
+  ]  
 }
 
 resource "aws_route" "private_internet_gateway_b" {
@@ -153,8 +207,38 @@ resource "aws_route" "private_internet_gateway_b" {
   }
 }
 
+resource "aws_route" "private_b_to_a" {
+  route_table_id         = aws_route_table.private_table_b.id
+  destination_cidr_block = var.cidr_block_a
+  transit_gateway_id           = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_b
+  ]  
+}
+
+resource "aws_route" "private_b_to_c" {
+  route_table_id         = aws_route_table.private_table_b.id
+  destination_cidr_block = var.cidr_block_c
+  transit_gateway_id         = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_b
+  ]  
+}
+
 resource "aws_route_table_association" "public_b"{  
-   count = 4
+   count = length(var.public_subnets_b)
    subnet_id = aws_subnet.vpc-public-subnet-b[count.index].id
    route_table_id = aws_route_table.public_table_b.id
 
@@ -165,7 +249,7 @@ resource "aws_route_table_association" "public_b"{
 }
 
 resource "aws_route_table_association" "private_b"{  
-   count = 4
+   count = length(var.public_subnets_b)
    subnet_id = aws_subnet.vpc-private-subnet-b[count.index].id
    route_table_id = aws_route_table.private_table_b.id
 
@@ -212,24 +296,36 @@ resource "aws_route" "public_internet_gateway_c" {
   }
 }
 
-resource "aws_route" "tgw_c_to_a" {
+resource "aws_route" "public_tgw_c_to_a" {
+  count = length(var.public_subnets_a)
   route_table_id         = aws_route_table.public_table_c.id
-  destination_cidr_block = var.cidr_block_a
+  destination_cidr_block = var.public_subnets_a[count.index]
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_c
+  ]
 }
 
-resource "aws_route" "tgw_c_to_b" {
+resource "aws_route" "public_tgw_c_to_b" {
+  count = length(var.public_subnets_b)
   route_table_id         = aws_route_table.public_table_c.id
-  destination_cidr_block = var.cidr_block_b
+  destination_cidr_block = var.public_subnets_b[count.index]
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
     create = "5m"
   }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_c
+  ]
 }
 
 resource "aws_route" "private_internet_gateway_c" {
@@ -242,8 +338,38 @@ resource "aws_route" "private_internet_gateway_c" {
   }
 }
 
+resource "aws_route" "private_c_to_a" {
+  route_table_id         = aws_route_table.private_table_c.id
+  destination_cidr_block = var.cidr_block_a
+  transit_gateway_id     = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_c
+  ]
+}
+
+resource "aws_route" "private_c_to_b" {
+  route_table_id         = aws_route_table.private_table_c.id
+  destination_cidr_block = var.cidr_block_b
+  transit_gateway_id         = module.tgw.tgw_id
+
+  timeouts {
+    create = "5m"
+  }
+
+  depends_on = [
+    module.tgw.tgw_id,
+    module.tgw.tgw_attach_c
+  ]
+}
+
 resource "aws_route_table_association" "public_c"{  
-   count = 4
+   count = length(var.public_subnets_c)
    subnet_id = aws_subnet.vpc-public-subnet-c[count.index].id
    route_table_id = aws_route_table.public_table_c.id
 
@@ -254,7 +380,7 @@ resource "aws_route_table_association" "public_c"{
 }
 
 resource "aws_route_table_association" "private_c"{  
-   count = 4
+   count = length(var.public_subnets_c)
    subnet_id = aws_subnet.vpc-private-subnet-c[count.index].id
    route_table_id = aws_route_table.private_table_c.id
 
