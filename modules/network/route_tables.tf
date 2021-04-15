@@ -118,7 +118,7 @@ resource "aws_route_table_association" "public_a"{
 }
 
 resource "aws_route_table_association" "private_a"{  
-   count = length(var.public_subnets_a)
+   count = length(var.private_subnets_a)
    subnet_id = aws_subnet.vpc-private-subnet-a[count.index].id
    route_table_id = aws_route_table.private_table_a.id
 
@@ -249,7 +249,7 @@ resource "aws_route_table_association" "public_b"{
 }
 
 resource "aws_route_table_association" "private_b"{  
-   count = length(var.public_subnets_b)
+   count = length(var.private_subnets_b)
    subnet_id = aws_subnet.vpc-private-subnet-b[count.index].id
    route_table_id = aws_route_table.private_table_b.id
 
@@ -380,7 +380,7 @@ resource "aws_route_table_association" "public_c"{
 }
 
 resource "aws_route_table_association" "private_c"{  
-   count = length(var.public_subnets_c)
+   count = length(var.private_subnets_c)
    subnet_id = aws_subnet.vpc-private-subnet-c[count.index].id
    route_table_id = aws_route_table.private_table_c.id
 
