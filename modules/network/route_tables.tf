@@ -35,9 +35,8 @@ resource "aws_route" "public_internet_gateway_a" {
 }
 
 resource "aws_route" "public_tgw_a_to_b" {
-  count = length(var.public_subnets_b)
   route_table_id         = aws_route_table.public_table_a.id
-  destination_cidr_block = var.public_subnets_b[count.index]
+  destination_cidr_block = var.cidr_block_b
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
@@ -51,9 +50,8 @@ resource "aws_route" "public_tgw_a_to_b" {
 }
 
 resource "aws_route" "public_tgw_a_to_c" {
-  count = length(var.public_subnets_c)
   route_table_id         = aws_route_table.public_table_a.id
-  destination_cidr_block = var.public_subnets_c[count.index]
+  destination_cidr_block = var.cidr_block_c
   transit_gateway_id = module.tgw.tgw_id
   
   timeouts {
@@ -166,9 +164,8 @@ resource "aws_route" "public_internet_gateway_b" {
 }
 
 resource "aws_route" "public_tgw_b_to_a" {
-  count = length(var.public_subnets_a)
   route_table_id         = aws_route_table.public_table_b.id
-  destination_cidr_block = var.public_subnets_a[count.index]
+  destination_cidr_block = var.cidr_block_a
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
@@ -182,9 +179,8 @@ resource "aws_route" "public_tgw_b_to_a" {
 }
 
 resource "aws_route" "public_tgw_b_to_c" {
-  count = length(var.public_subnets_c)
   route_table_id         = aws_route_table.public_table_b.id
-  destination_cidr_block = var.public_subnets_c[count.index]
+  destination_cidr_block = var.cidr_block_c
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
@@ -297,9 +293,8 @@ resource "aws_route" "public_internet_gateway_c" {
 }
 
 resource "aws_route" "public_tgw_c_to_a" {
-  count = length(var.public_subnets_a)
   route_table_id         = aws_route_table.public_table_c.id
-  destination_cidr_block = var.public_subnets_a[count.index]
+  destination_cidr_block = var.cidr_block_a
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
@@ -313,9 +308,8 @@ resource "aws_route" "public_tgw_c_to_a" {
 }
 
 resource "aws_route" "public_tgw_c_to_b" {
-  count = length(var.public_subnets_b)
   route_table_id         = aws_route_table.public_table_c.id
-  destination_cidr_block = var.public_subnets_b[count.index]
+  destination_cidr_block = var.cidr_block_b
   transit_gateway_id = module.tgw.tgw_id
 
   timeouts {
